@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Foro 9 — Cliente Frecuente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #C8860A;
+    --gold-light: #F5E6C8;
+    --dark: #1A1410;
+    --dark2: #2C2318;
+    --mid: #6B5A3E;
+    --light: #F7F3EC;
+    --border: rgba(200,134,10,0.2);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--dark);
+    color: #F7F3EC;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .header {
+    background: var(--dark2);
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 1.5rem 1rem;
+    text-align: center;
+  }
+
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+
+  .logo-sub {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-top: 4px;
+  }
+
+  .tabs {
+    display: flex;
+    background: var(--dark2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1rem;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 12px 8px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--mid);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+  }
+
+  .tab.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  .content {
+    padding: 1.25rem 1rem;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .card {
+    background: var(--dark2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .card-title {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 1rem;
+  }
+
+  label {
+    display: block;
+    font-size: 12px;
+    color: var(--mid);
+    margin-bottom: 5px;
+    letter-spacing: 0.05em;
+  }
+
+  input[type=text], input[type=tel] {
+    width: 100%;
+    background: var(--dark);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    color: var(--light);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    margin-bottom: 12px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  input[type=text]:focus, input[type=tel]:focus {
+    border-color: var(--gold);
+  }
+
+  input::placeholder { color: var(--mid); }
+
+  .btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+    letter-spacing: 0.03em;
+  }
+
+  .btn:active { transform: scale(0.98); }
+  .btn:hover { opacity: 0.88; }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+  .btn-gold {
+    background: var(--gold);
+    color: #fff;
+    margin-top: 4px;
+  }
+
+  .btn-wa {
+    background: #25D366;
+    color: #fff;
+    margin-top: 8px;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--mid);
+    border: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .btn-registrar {
+    background: var(--gold);
+    color: #fff;
+    margin-top: 12px;
+  }
+
+  .hidden { display: none !important; }
+
+  .qr-wrap {
+    text-align: center;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: var(--dark);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+  }
+
+  #qr-canvas {
+    border-radius: 6px;
+  }
+
+  .qr-id {
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    margin-top: 8px;
+    font-weight: 500;
+  }
+
+  .perfil-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+
+  .perfil-nombre {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--light);
+  }
+
+  .perfil-tel {
+    font-size: 13px;
+    color: var(--mid);
+    margin-top: 2px;
+  }
+
+  .badge {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .badge-normal {
+    background: var(--dark);
+    color: var(--mid);
+    border: 1px solid var(--border);
+  }
+
+  .badge-alerta {
+    background: rgba(200,134,10,0.15);
+    color: var(--gold);
+    border: 1px solid rgba(200,134,10,0.3);
+  }
+
+  .badge-premio {
+    background: var(--gold);
+    color: #fff;
+  }
+
+  .cervejas-grid {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 0.75rem 0;
+  }
+
+  .cerveja {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    border: 1px solid var(--border);
+    background: var(--dark);
+    transition: all 0.2s;
+  }
+
+  .cerveja.llena {
+    background: rgba(200,134,10,0.15);
+    border-color: var(--gold);
+  }
+
+  .premio-banner {
+    background: rgba(200,134,10,0.12);
+    border: 1px solid rgba(200,134,10,0.3);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--gold);
+    font-weight: 500;
+    margin: 0.75rem 0;
+  }
+
+  .scan-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .scan-row input {
+    flex: 1;
+    margin-bottom: 0;
+  }
+
+  .btn-buscar {
+    padding: 10px 16px;
+    background: var(--gold);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.15s;
+  }
+
+  .btn-buscar:hover { opacity: 0.85; }
+
+  .historial-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .historial-item:last-child { border-bottom: none; }
+  .historial-fecha { color: var(--mid); }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+
+  .stat-card {
+    background: var(--dark2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+  }
+
+  .stat-val {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--gold);
+  }
+
+  .stat-lbl {
+    font-size: 11px;
+    color: var(--mid);
+    margin-top: 2px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .cliente-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+
+  .cliente-row:last-child { border-bottom: none; }
+  .cliente-info { color: var(--mid); font-size: 12px; margin-top: 2px; }
+
+  .empty-msg {
+    font-size: 13px;
+    color: var(--mid);
+    text-align: center;
+    padding: 1.5rem 0;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1rem 0;
+  }
+
+  .seccion-lbl {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 0.75rem;
+  }
+
+  /* ── Loading / error states ── */
+  .loader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--mid);
+    padding: 10px 0;
+  }
+
+  .spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--border);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .toast {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--dark2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 18px;
+    font-size: 13px;
+    color: var(--light);
+    z-index: 999;
+    animation: fadeInUp 0.2s ease;
+    max-width: 90vw;
+    text-align: center;
+  }
+
+  .toast.error { border-color: #c0392b; color: #e74c3c; }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">Foro 9</div>
+  <div class="logo-sub">Cliente Frecuente</div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('registro')">Registro</button>
+  <button class="tab" onclick="showTab('escaneo')">Visita</button>
+  <button class="tab" onclick="showTab('stats')">Estadísticas</button>
+</div>
+
+<div class="content">
+
+  <!-- TAB REGISTRO -->
+  <div id="tab-registro">
+    <div class="card" id="form-registro">
+      <p class="card-title">Nuevo cliente</p>
+      <label>Nombre</label>
+      <input type="text" id="inp-nombre" placeholder="Ej. Juan Pérez" />
+      <label>País</label>
+      <select id="inp-pais" style="width:100%;background:var(--dark);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;color:var(--light);font-family:'DM Sans',sans-serif;font-size:15px;margin-bottom:12px;outline:none;appearance:none;-webkit-appearance:none;cursor:pointer;">
+        <option value="52">🇲🇽 México (+52)</option>
+        <option value="1">🇺🇸 EUA / Canadá (+1)</option>
+        <option value="otro">🌎 Otro país</option>
+      </select>
+      <label>Teléfono WhatsApp</label>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
+        <span id="lada-prefix" style="background:var(--dark);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;color:var(--gold);font-size:15px;white-space:nowrap;font-weight:500;">+52</span>
+        <input type="tel" id="inp-tel" placeholder="Ej. 3221234567" style="margin-bottom:0;flex:1;" />
+      </div>
+      <div id="wrap-lada-manual" style="display:none;">
+        <label>Código de país (sin el +)</label>
+        <input type="tel" id="inp-lada" placeholder="Ej. 34 para España" />
+      </div>
+      <button class="btn btn-gold" id="btn-registrar-cliente" onclick="registrarCliente()">Generar tarjeta QR</button>
+    </div>
+
+    <div class="card hidden" id="resultado-registro">
+      <div class="perfil-row">
+        <div>
+          <div class="perfil-nombre" id="res-nombre"></div>
+          <div class="perfil-tel" id="res-tel"></div>
+        </div>
+        <span class="badge badge-normal">0 / 10</span>
+      </div>
+      <div class="qr-wrap">
+        <canvas id="qr-canvas" width="180" height="180"></canvas>
+        <div class="qr-id" id="res-id"></div>
+      </div>
+      <button class="btn btn-wa" onclick="enviarWhatsApp()">
+        Enviar por WhatsApp
+      </button>
+      <button class="btn btn-ghost" onclick="nuevoRegistro()">Registrar otro cliente</button>
+    </div>
+  </div>
+
+  <!-- TAB ESCANEO -->
+  <div id="tab-escaneo" class="hidden">
+    <div class="card">
+      <p class="card-title">Registrar visita</p>
+      <label>ID del cliente (del QR)</label>
+      <div class="scan-row">
+        <input type="text" id="inp-scan" placeholder="Ej. F9-AB3XY7Z2" />
+        <button class="btn-buscar" id="btn-buscar" onclick="buscarCliente()">Buscar</button>
+      </div>
+      <div id="loader-buscar" class="loader hidden">
+        <div class="spinner"></div> Buscando...
+      </div>
+    </div>
+
+    <div class="card hidden" id="perfil-cliente">
+      <div class="perfil-row">
+        <div>
+          <div class="perfil-nombre" id="scan-nombre"></div>
+          <div class="perfil-tel" id="scan-tel"></div>
+        </div>
+        <span id="scan-badge" class="badge badge-normal"></span>
+      </div>
+
+      <div class="seccion-lbl">Visitas ciclo actual</div>
+      <div class="cervejas-grid" id="cervejas-grid"></div>
+
+      <div id="premio-banner" class="premio-banner hidden">
+        🍺 ¡Premio desbloqueado! — Cerveza gratis al registrar esta visita
+      </div>
+
+      <button class="btn btn-registrar" id="btn-reg-visita" onclick="registrarVisita()">Registrar visita</button>
+      <div id="loader-visita" class="loader hidden">
+        <div class="spinner"></div> Guardando visita...
+      </div>
+
+      <div class="divider"></div>
+      <div class="seccion-lbl">Últimas visitas</div>
+      <div id="historial-lista"></div>
+    </div>
+  </div>
+
+  <!-- TAB STATS -->
+  <div id="tab-stats" class="hidden">
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-val" id="st-clientes">—</div>
+        <div class="stat-lbl">Clientes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="st-visitas">—</div>
+        <div class="stat-lbl">Visitas totales</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="st-premios">—</div>
+        <div class="stat-lbl">Premios dados</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="st-activos">—</div>
+        <div class="stat-lbl">En 5+ visitas</div>
+      </div>
+    </div>
+    <div id="loader-stats" class="loader">
+      <div class="spinner"></div> Cargando estadísticas...
+    </div>
+    <div class="card hidden" id="card-lista">
+      <p class="card-title">Todos los clientes</p>
+      <div id="lista-clientes"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+//  CONFIG — reemplaza esta URL cuando publiques el Apps Script
+// ============================================================
+const API_URL = 'https://script.google.com/macros/s/AKfycbz2J5noOGmkRUbn9DFNS4PYFd_AN1jTxL2m3s2rMiGpXxOj67n200K9_fdm_QECQCtU/exec';
+
+// ============================================================
+//  QR generator nativo - sin dependencias externas
+// ============================================================
+const QRGen = (function(){
+  const GF={};
+  function gfExp(x){return GF.exp[x]}
+  function gfMul(a,b){if(a===0||b===0)return 0;return GF.exp[(GF.log[a]+GF.log[b])%255]}
+  GF.exp=new Uint8Array(512);GF.log=new Uint8Array(256);
+  let x=1;for(let i=0;i<255;i++){GF.exp[i]=x;GF.log[x]=i;x<<=1;if(x&256)x^=285;}
+  for(let i=255;i<512;i++)GF.exp[i]=GF.exp[i-255];
+  function gfPolyMul(a,b){let r=new Uint8Array(a.length+b.length-1);for(let i=0;i<a.length;i++)for(let j=0;j<b.length;j++)r[i+j]^=gfMul(a[i],b[j]);return r;}
+  function rsGen(d){let g=[1];for(let i=0;i<d;i++)g=gfPolyMul(g,[1,gfExp(i)]);return g;}
+  function rsEncode(data,d){let g=rsGen(d),info=new Uint8Array(data.length+d);for(let i=0;i<data.length;i++)info[i]=data[i];for(let i=0;i<data.length;i++){let c=info[i];if(c!==0)for(let j=0;j<g.length;j++)info[i+j]^=gfMul(g[j],c);}return info.slice(data.length);}
+  const ALPHANUM='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
+  function encode(text){
+    text=text.toUpperCase();
+    let bits=[];
+    function addBits(val,len){for(let i=len-1;i>=0;i--)bits.push((val>>i)&1);}
+    addBits(2,4);addBits(text.length,9);
+    for(let i=0;i<text.length-1;i+=2){
+      let v=ALPHANUM.indexOf(text[i])*45+ALPHANUM.indexOf(text[i+1]);addBits(v,11);}
+    if(text.length%2){addBits(ALPHANUM.indexOf(text[text.length-1]),6);}
+    addBits(0,4);
+    while(bits.length%8)bits.push(0);
+    let bytes=[];for(let i=0;i<bits.length;i+=8){let b=0;for(let j=0;j<8;j++)b=(b<<1)|bits[i+j];bytes.push(b);}
+    const CAP=16,EC=10;
+    while(bytes.length<CAP){bytes.push(bytes.length%2===0?236:17);}
+    let ec=rsEncode(new Uint8Array(bytes),EC);
+    let all=[...bytes,...ec];
+    let finalBits=[];all.forEach(b=>{for(let i=7;i>=0;i--)finalBits.push((b>>i)&1);});
+    return finalBits;
+  }
+  const SIZE=21;
+  function makeMatrix(){return Array.from({length:SIZE},()=>new Array(SIZE).fill(-1));}
+  function setFinder(m,r,c){for(let i=-1;i<=7;i++)for(let j=-1;j<=7;j++){if(i<0||i>7||j<0||j>7)continue;let v=(i===0||i===6||j===0||j===6||(i>=2&&i<=4&&j>=2&&j<=4))?1:0;if(r+i>=0&&r+i<SIZE&&c+j>=0&&c+j<SIZE)m[r+i][c+j]=v;}}
+  function setTiming(m){for(let i=8;i<SIZE-8;i++){m[6][i]=i%2===0?1:0;m[i][6]=i%2===0?1:0;}}
+  function setAlignment(m){const pos=[4,16];for(let r of pos)for(let c of pos){if(m[r][c]!==-1)continue;for(let i=-2;i<=2;i++)for(let j=-2;j<=2;j++){m[r+i][c+j]=(i===0&&j===0||Math.abs(i)===2||Math.abs(j)===2)?1:0;}}}
+  function isData(m,r,c){return m[r][c]===-1;}
+  function placeData(m,bits){let idx=0;let up=true;for(let col=SIZE-1;col>=0;col-=2){if(col===6)col--;for(let row=0;row<SIZE;row++){let r=up?SIZE-1-row:row;for(let dc=0;dc<2;dc++){let c=col-dc;if(isData(m,r,c)){m[r][c]=idx<bits.length?bits[idx++]:0;}}}up=!up;}}
+  function applyMask(m){const n=makeMatrix();for(let r=0;r<SIZE;r++)for(let c=0;c<SIZE;c++){n[r][c]=m[r][c]===-1?0:m[r][c];if(m[r][c]===-1)n[r][c]^=((r+c)%2===0?1:0);}return n;}
+  function setFormat(m){const fmt=[1,1,1,0,1,1,1,1,0,0,0,1,0,0,0];const pos=[[8,0],[8,1],[8,2],[8,3],[8,4],[8,5],[8,7],[8,8],[7,8],[5,8],[4,8],[3,8],[2,8],[1,8],[0,8]];pos.forEach(([r,c],i)=>{m[r][c]=fmt[i];});for(let i=0;i<7;i++)m[SIZE-1-i][8]=fmt[i];for(let i=7;i<15;i++)m[8][SIZE-15+i]=fmt[i];m[SIZE-8][8]=1;}
+  return {
+    render(text,canvas,size){
+      size=size||200;
+      let bits=encode(text);
+      let m=makeMatrix();
+      setFinder(m,0,0);setFinder(m,0,SIZE-7);setFinder(m,SIZE-7,0);
+      setTiming(m);setAlignment(m);
+      m[13][6]=0;
+      placeData(m,bits);
+      let final=applyMask(m);
+      setFormat(final);
+      const ctx=canvas.getContext('2d');
+      canvas.width=size;canvas.height=size;
+      const cell=Math.floor(size/SIZE);
+      const off=Math.floor((size-cell*SIZE)/2);
+      ctx.fillStyle='#ffffff';ctx.fillRect(0,0,size,size);
+      ctx.fillStyle='#1A1410';
+      for(let r=0;r<SIZE;r++)for(let c=0;c<SIZE;c++){
+        if(final[r][c])ctx.fillRect(off+c*cell,off+r*cell,cell,cell);
+      }
+    }
+  };
+})();
+</script>
+
+<script>
+// ============================================================
+//  ESTADO
+// ============================================================
+let currentID = null;
+
+// ============================================================
+//  API — capa de comunicación con Apps Script (GET)
+// ============================================================
+async function api(payload) {
+  const params = new URLSearchParams(payload).toString();
+  const res = await fetch(API_URL + '?' + params);
+  if (!res.ok) throw new Error('Error de red: ' + res.status);
+  const data = await res.json();
+  if (!data.ok) throw new Error(data.error || 'Error desconocido');
+  return data;
+}
+
+// ============================================================
+//  UI HELPERS
+// ============================================================
+function showTab(tab) {
+  ['registro','escaneo','stats'].forEach((t, i) => {
+    document.getElementById('tab-'+t).classList.toggle('hidden', t !== tab);
+    document.querySelectorAll('.tab')[i].classList.toggle('active', t === tab);
+  });
+  if (tab === 'stats') renderStats();
+}
+
+let toastTimer = null;
+function toast(msg, isError = false) {
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+  if (toastTimer) clearTimeout(toastTimer);
+  const el = document.createElement('div');
+  el.className = 'toast' + (isError ? ' error' : '');
+  el.textContent = msg;
+  document.body.appendChild(el);
+  toastTimer = setTimeout(() => el.remove(), 3000);
+}
+
+function setLoading(btnId, loaderId, loading) {
+  const btn = document.getElementById(btnId);
+  const loader = document.getElementById(loaderId);
+  if (btn) btn.disabled = loading;
+  if (loader) loader.classList.toggle('hidden', !loading);
+}
+
+// ============================================================
+//  TAB REGISTRO
+// ============================================================
+function genID() {
+  return 'F9-' + Math.random().toString(36).substr(2,8).toUpperCase();
+}
+
+async function registrarCliente() {
+  const nombre = document.getElementById('inp-nombre').value.trim();
+  const telRaw = document.getElementById('inp-tel').value.trim();
+  const selPais = document.getElementById('inp-pais');
+  const pais    = selPais ? selPais.value : '52';
+
+  if (!nombre || !telRaw) { toast('Por favor completa nombre y teléfono.', true); return; }
+
+  // Armar lada
+  let lada = pais;
+  if (pais === 'otro') {
+    const ladaManual = document.getElementById('inp-lada').value.trim().replace(/\D/g,'');
+    if (!ladaManual) { toast('Ingresa el código de país.', true); return; }
+    lada = ladaManual;
+  }
+
+  const telLimpio = telRaw.replace(/\D/g,'');
+  // Guardamos el número con código de país incluido
+  const tel = lada + telLimpio;
+
+  setLoading('btn-registrar-cliente', null, true);
+  const id = genID();
+
+  try {
+    const data = await api({ action: 'registrar', id, nombre, tel });
+    const c = data.cliente;
+
+    document.getElementById('res-nombre').textContent = c.nombre;
+    document.getElementById('res-tel').textContent    = c.tel;
+    document.getElementById('res-id').textContent     = c.id;
+
+    QRGen.render('FORO9:' + c.id, document.getElementById('qr-canvas'), 180);
+    currentID = c.id;
+
+    document.getElementById('form-registro').classList.add('hidden');
+    document.getElementById('resultado-registro').classList.remove('hidden');
+
+  } catch (err) {
+    toast('Error al registrar: ' + err.message, true);
+  } finally {
+    setLoading('btn-registrar-cliente', null, false);
+  }
+}
+
+function enviarWhatsApp() {
+  const nombre = document.getElementById('res-nombre').textContent;
+  const tel    = document.getElementById('res-tel').textContent;
+  const id     = document.getElementById('res-id').textContent;
+  const msg = encodeURIComponent(
+    `¡Hola ${nombre}! 🍺\n\nYa eres cliente frecuente de *Foro 9*.\n\nTu ID de cliente es:\n*${id}*\n\nGuárdalo bien. Cada 10 visitas te ganas una cerveza gratis. ¡Salud!`
+  );
+  // El tel guardado trae el código de país al inicio (ej. "521234567890" o "12025551234")
+  const telLimpio = tel.replace(/\D/g,'');
+  window.open(`https://wa.me/${telLimpio}?text=${msg}`, '_blank');
+}
+
+// Selector de país — actualiza el prefijo visible y muestra/oculta campo manual
+document.addEventListener('DOMContentLoaded', () => {
+  const selPais  = document.getElementById('inp-pais');
+  const prefixEl = document.getElementById('lada-prefix');
+  const wrapManual = document.getElementById('wrap-lada-manual');
+
+  if (selPais) {
+    selPais.addEventListener('change', () => {
+      const v = selPais.value;
+      if (v === 'otro') {
+        prefixEl.textContent = '+';
+        wrapManual.style.display = 'block';
+      } else {
+        prefixEl.textContent = '+' + v;
+        wrapManual.style.display = 'none';
+      }
+    });
+  }
+});
+
+function nuevoRegistro() {
+  document.getElementById('inp-nombre').value = '';
+  document.getElementById('inp-tel').value    = '';
+  document.getElementById('inp-pais').value   = '52';
+  document.getElementById('lada-prefix').textContent = '+52';
+  document.getElementById('inp-lada') && (document.getElementById('inp-lada').value = '');
+  document.getElementById('wrap-lada-manual').style.display = 'none';
+  document.getElementById('form-registro').classList.remove('hidden');
+  document.getElementById('resultado-registro').classList.add('hidden');
+}
+
+// ============================================================
+//  TAB ESCANEO
+// ============================================================
+async function buscarCliente() {
+  const raw = document.getElementById('inp-scan').value.trim();
+  if (!raw) { toast('Ingresa un ID de cliente.', true); return; }
+  const id = raw.startsWith('FORO9:') ? raw.split(':')[1] : raw.toUpperCase();
+
+  setLoading('btn-buscar', 'loader-buscar', true);
+  document.getElementById('perfil-cliente').classList.add('hidden');
+
+  try {
+    const data = await api({ action: 'buscar', id });
+    renderPerfil(data.cliente);
+  } catch (err) {
+    toast('Cliente no encontrado.', true);
+  } finally {
+    setLoading('btn-buscar', 'loader-buscar', false);
+  }
+}
+
+function renderPerfil(c) {
+  currentID = c.id;
+  document.getElementById('scan-nombre').textContent = c.nombre;
+  document.getElementById('scan-tel').textContent    = c.tel;
+
+  const vis   = c.visitas % 10;
+  const badge = document.getElementById('scan-badge');
+  badge.textContent  = vis + ' / 10';
+  badge.className    = 'badge ' + (vis >= 9 ? 'badge-premio' : vis >= 5 ? 'badge-alerta' : 'badge-normal');
+
+  const grid = document.getElementById('cervejas-grid');
+  grid.innerHTML = '';
+  for (let i = 0; i < 10; i++) {
+    const d = document.createElement('div');
+    d.className  = 'cerveja' + (i < vis ? ' llena' : '');
+    d.textContent = i < vis ? '🍺' : '';
+    grid.appendChild(d);
+  }
+
+  document.getElementById('premio-banner').classList.toggle('hidden', vis !== 9);
+
+  const hist   = document.getElementById('historial-lista');
+  hist.innerHTML = '';
+  const ultimas = (c.historial || []).slice(-6).reverse();
+  if (ultimas.length === 0) {
+    hist.innerHTML = '<p style="font-size:13px;color:#6B5A3E;padding:8px 0;">Sin visitas registradas aún.</p>';
+  } else {
+    ultimas.forEach(h => {
+      hist.innerHTML += `<div class="historial-item"><span>${h.nota}</span><span class="historial-fecha">${h.fecha}</span></div>`;
+    });
+  }
+
+  document.getElementById('perfil-cliente').classList.remove('hidden');
+}
+
+async function registrarVisita() {
+  if (!currentID) return;
+
+  setLoading('btn-reg-visita', 'loader-visita', true);
+
+  try {
+    const data = await api({ action: 'registrarVisita', id: currentID });
+    renderPerfil(data.cliente);
+    if (data.esPremio) {
+      setTimeout(() => toast(`¡Premio canjeado! 🍺 ${data.cliente.nombre} ganó su cerveza. Nuevo ciclo iniciado.`), 100);
+    } else {
+      toast('Visita registrada ✓');
+    }
+  } catch (err) {
+    toast('Error al registrar visita: ' + err.message, true);
+  } finally {
+    setLoading('btn-reg-visita', 'loader-visita', false);
+  }
+}
+
+// ============================================================
+//  TAB STATS
+// ============================================================
+async function renderStats() {
+  document.getElementById('loader-stats').classList.remove('hidden');
+  document.getElementById('card-lista').classList.add('hidden');
+
+  try {
+    const data = await api({ action: 'stats' });
+    const cs = data.clientes;
+
+    document.getElementById('st-clientes').textContent = cs.length;
+    document.getElementById('st-visitas').textContent  = cs.reduce((a,c) => a + c.visitas, 0);
+    document.getElementById('st-premios').textContent  = cs.reduce((a,c) => a + (c.premios||0), 0);
+    document.getElementById('st-activos').textContent  = cs.filter(c => (c.visitas % 10) >= 5).length;
+
+    const lista = document.getElementById('lista-clientes');
+    lista.innerHTML = '';
+    if (cs.length === 0) {
+      lista.innerHTML = '<p class="empty-msg">Aún no hay clientes registrados.</p>';
+    } else {
+      [...cs].reverse().forEach(c => {
+        lista.innerHTML += `
+          <div class="cliente-row">
+            <div>
+              <div>${c.nombre}</div>
+              <div class="cliente-info">${c.id} · ${c.tel}</div>
+            </div>
+            <span class="badge ${(c.visitas%10)>=5?'badge-alerta':'badge-normal'}">${c.visitas%10}/10</span>
+          </div>`;
+      });
+    }
+
+    document.getElementById('card-lista').classList.remove('hidden');
+
+  } catch (err) {
+    toast('Error cargando stats: ' + err.message, true);
+  } finally {
+    document.getElementById('loader-stats').classList.add('hidden');
+  }
+}
+</script>
+</body>
+</html>
