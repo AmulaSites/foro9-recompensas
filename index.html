@@ -429,9 +429,87 @@
     from { opacity: 0; transform: translateX(-50%) translateY(8px); }
     to   { opacity: 1; transform: translateX(-50%) translateY(0); }
   }
+
+  /* ── Modal aviso visita 9 ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(44,26,14,0.6);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+  .modal-overlay.visible {
+    display: flex;
+  }
+  .modal-box {
+    background: rgba(255,252,248,0.98);
+    border: 1px solid rgba(139,94,26,0.25);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 340px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(44,26,14,0.25);
+    animation: modalIn 0.2s ease;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  .modal-emoji { font-size: 40px; margin-bottom: 0.5rem; }
+  .modal-titulo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+  }
+  .modal-nombre {
+    font-size: 16px;
+    font-weight: 500;
+    color: #2C1A0E;
+    margin-bottom: 0.5rem;
+  }
+  .modal-desc {
+    font-size: 13px;
+    color: #6B4422;
+    margin-bottom: 1.25rem;
+    line-height: 1.5;
+  }
+  .modal-btns {
+    display: flex;
+    gap: 10px;
+  }
+  .modal-btns .btn {
+    flex: 1;
+    margin: 0;
+  }
+  .btn-outline {
+    background: transparent;
+    border: 1px solid rgba(139,94,26,0.35);
+    color: #6B4422;
+  }
 </style>
 </head>
 <body>
+
+<!-- Modal aviso visita 9 -->
+<div class="modal-overlay" id="modal-visita9">
+  <div class="modal-box">
+    <div class="modal-emoji">🍺</div>
+    <div class="modal-titulo">¡Visita 9!</div>
+    <div class="modal-nombre" id="modal-cliente-nombre"></div>
+    <div class="modal-desc">Ya está a una visita de su cerveza gratis.<br>¿Le avisamos por WhatsApp?</div>
+    <div class="modal-btns">
+      <button class="btn btn-outline" onclick="cerrarModal()">Ahora no</button>
+      <button class="btn btn-gold" onclick="confirmarWhatsApp()">Enviar mensaje</button>
+    </div>
+  </div>
+</div>
 
 <div class="header">
   <div class="logo">Foro 9</div>
@@ -845,8 +923,7 @@ async function registrarVisita() {
     if (data.esPremio) {
       setTimeout(() => toast(`¡Premio canjeado! 🍺 ${data.cliente.nombre} ganó su cerveza. Nuevo ciclo iniciado.`), 100);
     } else if (visActuales === 9) {
-      toast('Visita 9 registrada ✓ — Abriendo WhatsApp para avisar al cliente…');
-      setTimeout(() => avisarProximoPremio(data.cliente), 800);
+      setTimeout(() => abrirModalVisita9(data.cliente), 300);
     } else {
       toast('Visita registrada ✓');
     }
@@ -856,6 +933,37 @@ async function registrarVisita() {
     setLoading('btn-reg-visita', 'loader-visita', false);
   }
 }
+
+let _clientePendiente = null;
+
+function abrirModalVisita9(cliente) {
+  _clientePendiente = cliente;
+  document.getElementById('modal-cliente-nombre').textContent = cliente.nombre;
+  document.getElementById('modal-visita9').classList.add('visible');
+}
+
+function cerrarModal() {
+  document.getElementById('modal-visita9').classList.remove('visible');
+  _clientePendiente = null;
+  toast('Visita 9 registrada ✓');
+}
+
+function confirmarWhatsApp() {
+  cerrarModal();
+  if (_clientePendiente) avisarProximoPremio(_clientePendiente);
+  // cerrarModal ya limpió _clientePendiente, guardamos antes
+}
+
+// Sobreescribir confirmarWhatsApp para tener el cliente correcto
+(function() {
+  const _cerrar = cerrarModal;
+  window.confirmarWhatsApp = function() {
+    const c = _clientePendiente;
+    document.getElementById('modal-visita9').classList.remove('visible');
+    _clientePendiente = null;
+    if (c) avisarProximoPremio(c);
+  };
+})();
 
 function avisarProximoPremio(cliente) {
   const telLimpio = cliente.tel.replace(/\D/g, '');
