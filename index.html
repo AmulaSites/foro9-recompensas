@@ -839,8 +839,14 @@ async function registrarVisita() {
   try {
     const data = await api({ action: 'registrarVisita', id: currentID });
     renderPerfil(data.cliente);
+
+    const visActuales = data.cliente.visitas % 10;
+
     if (data.esPremio) {
       setTimeout(() => toast(`¡Premio canjeado! 🍺 ${data.cliente.nombre} ganó su cerveza. Nuevo ciclo iniciado.`), 100);
+    } else if (visActuales === 9) {
+      toast('Visita 9 registrada ✓ — Abriendo WhatsApp para avisar al cliente…');
+      setTimeout(() => avisarProximoPremio(data.cliente), 800);
     } else {
       toast('Visita registrada ✓');
     }
@@ -849,6 +855,14 @@ async function registrarVisita() {
   } finally {
     setLoading('btn-reg-visita', 'loader-visita', false);
   }
+}
+
+function avisarProximoPremio(cliente) {
+  const telLimpio = cliente.tel.replace(/\D/g, '');
+  const msg = encodeURIComponent(
+    `¡Hola ${cliente.nombre}! 🍺\n\nYa llevas *9 visitas* en *Foro 9*.\n\n¡Tu próxima visita te ganas una cerveza gratis! 🎉\n\n¡Te esperamos pronto!`
+  );
+  window.open(`https://wa.me/${telLimpio}?text=${msg}`, '_blank');
 }
 
 // ============================================================
